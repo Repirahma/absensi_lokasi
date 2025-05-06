@@ -1,6 +1,6 @@
 // Koordinat Universitas Cendekia Abditama
-const kampusLat = -7.3302;
-const kampusLng = 112.7897;
+const kampusLat = -6.22812727659637;
+const kampusLng = 106.61658325811513;
 const maxJarakMeter = 200;
 
 document.getElementById("absenForm").addEventListener("submit", async function(e) {
