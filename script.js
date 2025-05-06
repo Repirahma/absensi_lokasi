@@ -1,4 +1,4 @@
-// Koordinat Universitas Cendekia Abditama
+// Koordinat Universitas Cendekia Abditama (yang baru)
 const kampusLat = -6.22812727659637;
 const kampusLng = 106.61658325811513;
 const maxJarakMeter = 200;
