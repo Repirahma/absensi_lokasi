@@ -1,12 +1,10 @@
 {
-    "name": "Absensi Lokasi PWA",
+    "name": "Absensi Lokasi",
     "short_name": "Absensi",
     "start_url": "/index.html",
-    "scope": "/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#2196f3",
-    "description": "Aplikasi Absensi Berbasis Lokasi Menggunakan PWA",
     "icons": [
         {
             "src": "icon-192x192.png",
