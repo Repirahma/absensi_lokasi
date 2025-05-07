@@ -1,86 +1,51 @@
-// Koordinat Universitas Cendekia Abditama (yang baru)
-const kampusLat = -6.22812727659637;
-const kampusLng = 106.61658325811513;
-const maxJarakMeter = 200;
+const UCA_LAT = -6.2281268800691;
+const UCA_LNG = 106.61653522160745;
+const MAX_DISTANCE = 200; // Meter
 
-document.getElementById("absenForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
+function distance(lat1, lon1, lat2, lon2) {
+    const R = 6371000; // Radius bumi dalam meter
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
 
-  const nama = document.getElementById("nama").value;
-  const nim = document.getElementById("nim").value;
-  const kelas = document.getElementById("kelas").value;
+document.getElementById("absenForm").addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  if (!navigator.geolocation) {
-    alert("Geolocation tidak didukung di browser ini.");
-    return;
-  }
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const jarak = distance(UCA_LAT, UCA_LNG, lat, lng);
 
-  navigator.geolocation.getCurrentPosition(pos => {
-    const lat = pos.coords.latitude;
-    const lng = pos.coords.longitude;
-    const jarak = hitungJarak(lat, lng, kampusLat, kampusLng);
+            if (jarak <= MAX_DISTANCE) {
+                const nama = document.getElementById("nama").value;
+                const nim = document.getElementById("nim").value;
+                const kelas = document.getElementById("kelas").value;
+                const tanggal = new Date().toLocaleString();
 
-    if (jarak <= maxJarakMeter) {
-      const waktu = new Date().toLocaleString();
-      const data = { nama, nim, kelas, waktu, lat, lng };
-      simpanAbsensi(data);
-      tampilkanStatus("✅ Absensi berhasil!");
+                const absensi = { nama, nim, kelas, tanggal };
+                const absensiList = JSON.parse(localStorage.getItem("absensi")) || [];
+                absensiList.push(absensi);
+                localStorage.setItem("absensi", JSON.stringify(absensiList));
+
+                document.getElementById("message").textContent = "Absensi berhasil!";
+                tampilkanAbsensi();
+            } else {
+                document.getElementById("message").textContent = "Anda berada di luar area absen!";
+            }
+        });
     } else {
-      tampilkanStatus("❌ Kamu berada di luar lokasi kampus!", true);
+        alert("Geolocation tidak didukung oleh browser Anda.");
     }
-  }, () => {
-    alert("Gagal mendapatkan lokasi.");
-  });
 });
 
-function tampilkanStatus(pesan, error = false) {
-  const statusDiv = document.getElementById("status");
-  statusDiv.textContent = pesan;
-  statusDiv.style.color = error ? "red" : "green";
+function tampilkanAbsensi() {
+    const absensiList = JSON.parse(localStorage.getItem("absensi")) || [];
+    const listElement = document.getElementById("absensiList");
+    listElement.innerHTML = absensiList.map(absen => `<li>${absen.nama} - ${absen.nim} - ${absen.kelas} - ${absen.tanggal}</li>`).join("");
 }
 
-function simpanAbsensi(data) {
-  let absensi = JSON.parse(localStorage.getItem("absensi")) || [];
-  absensi.push(data);
-  localStorage.setItem("absensi", JSON.stringify(absensi));
-  tampilkanRiwayat();
-}
-
-function tampilkanRiwayat() {
-  const list = document.getElementById("riwayatAbsensi");
-  list.innerHTML = "";
-  const absensi = JSON.parse(localStorage.getItem("absensi")) || [];
-  absensi.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = `${item.waktu} - ${item.nama} (${item.nim}, ${item.kelas})`;
-    list.appendChild(li);
-  });
-}
-
-// Hitung jarak menggunakan rumus Haversine
-function hitungJarak(lat1, lon1, lat2, lon2) {
-  const R = 6371e3; // Radius bumi dalam meter
-  const toRad = deg => deg * Math.PI / 180;
-
-  const φ1 = toRad(lat1);
-  const φ2 = toRad(lat2);
-  const Δφ = toRad(lat2 - lat1);
-  const Δλ = toRad(lon2 - lon1);
-
-  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c;
-}
-
-// Tampilkan riwayat saat halaman dimuat
-tampilkanRiwayat();
-
-// Register Service Worker (jika ada)
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(() => console.log("Service Worker registered"))
-    .catch(err => console.error("SW registration failed:", err));
-}
+tampilkanAbsensi();
