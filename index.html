@@ -1,27 +1,45 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Absensi Lokasi</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#007bff">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Lokasi - PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2196f3">
 </head>
 <body>
-  <h1>Absensi Mahasiswa</h1>
-  <form id="absenForm">
-    <input type="text" id="nama" placeholder="Nama" required><br>
-    <input type="text" id="nim" placeholder="NIM" required><br>
-    <input type="text" id="kelas" placeholder="Kelas" required><br>
-    <button type="submit">Absen Sekarang</button>
-  </form>
 
-  <div id="status"></div>
+    <h2>Absensi Mahasiswa Berbasis Lokasi</h2>
+    <form id="absenForm">
+        <input type="text" id="nama" placeholder="Nama" required>
+        <input type="text" id="nim" placeholder="NIM" required>
+        <input type="text" id="kelas" placeholder="Kelas" required>
+        <button type="submit">Absen</button>
+    </form>
 
-  <h2>Riwayat Absensi</h2>
-  <ul id="riwayatAbsensi"></ul>
+    <div id="message"></div>
 
-  <script src="script.js"></script>
+    <h3>Riwayat Absensi</h3>
+    <ul id="absensiList"></ul>
+
+    <script src="script.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("service.worker.js")
+                    .then((registration) => {
+                        console.log("Service Worker Registered with scope:", registration.scope);
+                    })
+                    .catch((err) => {
+                        console.log("Service Worker Registration Failed:", err);
+                    });
+            });
+        }
+    </script>
+
 </body>
 </html>
