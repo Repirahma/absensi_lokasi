@@ -1,6 +1,6 @@
 const UCA_LAT = -6.2281268800691;
 const UCA_LNG = 106.61653522160745;
-const MAX_DISTANCE = 200; // Radius 200 meter
+const MAX_DISTANCE = 10; // Radius 10 meter
 
 function distance(lat1, lon1, lat2, lon2) {
     const R = 6371000; // Radius bumi dalam meter
