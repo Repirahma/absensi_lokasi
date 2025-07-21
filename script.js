@@ -1,5 +1,5 @@
-const kampusLat = -6.2257438;
-const kampusLng = 106.6171867;
+const kampusLat = -6.228185;
+const kampusLng = 106.616661;
 const radiusMaks = 7; // Radius maksimal diubah menjadi 7 meter
 
 document.getElementById("absenForm").addEventListener("submit", function (e) {
